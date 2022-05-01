@@ -17,7 +17,8 @@ Apache: The web server. The Apache web server processes requests and serves up w
 
 MySQL: The database. MySQL is an open source relational database management system for storing application data. With My SQL, you can store all your information in a format that is easily queried with the SQL language. SQL is a great choice if you are dealing with a business domain that is well structured, and you want to translate that structure into the backend. MySQL is suitable for running even large and complex sites. See "SQL vs. NoSQL Databases: What's the Difference?" for more information on SQL and NoSQL databases.
 
-PHP: The programming language. The PHP open source scripting language works with Apache to help you create dynamic web pages. You cannot use HTML to perform dynamic processes such as pulling data out of a database. To provide this type of functionality, you simply drop PHP code into the parts of a page that you want to be dynamic. 
+PHP: The programming language. The PHP open source scripting language works with Apache to help you create dynamic web pages. You cannot use HTML to perform dynamic processes such as pulling data out of a database. To provide this type of functionality, you simply drop PHP code into the parts of a page that you want to be dynamic.
+PHP is designed for efficiency. It makes programming easier—and a bit more fun—by allowing you to write new code, hit refresh, and immediately see the resulting changes without the need for compiling. If you prefer, you can swap out PHP in favor of Perl or the increasingly popular Python language.
 
 ## How the components work together
 
@@ -26,6 +27,7 @@ A high-level look at the LAMP stack order of execution shows how the elements in
 PHP then uses the code in the file and the data from the database to create the HTML that browsers require to display web pages. The LAMP stack is efficient at handling not only static web pages, but also dynamic pages where the content may change each time it is loaded depending on the date, time, user identity and other factors. 
 
 After running the file code, PHP then passes the resulting data back to the Apache web server to send to the browser. It can also store this new data in MySQL. And of course, all of these operations are enabled by the Linux operating system running at the base of the stack.
+
 
 ## Step 0 – Prerequisites - Connecting to my EC2 instance on my AWS account, using Putty on Windows OS.
 
@@ -42,18 +44,20 @@ Pictorial view of connecting to my EC2 instance using Ubuntu Server 22.04 LTS (H
 Pictorial view of connecting to my EC2 instance using MobaXterm
 ![EC2 Instance_MobaXterm](https://user-images.githubusercontent.com/96090546/166127334-beb90f8d-1684-4960-af6e-44c8f8113920.JPG)
 
-
 ## STEP 1 — INSTALLING APACHE AND UPDATING THE FIREWALL
 
 To install Apache using Ubuntu’s package manager ‘apt’:
 
 #update a list of packages in package manager
+
 sudo apt update
 
 #run apache2 package installation
+
 sudo apt install apache2
 
 To verify that apache2 is running as a Service in the OS, use following command;
+
 sudo systemctl status apache2
 
 Accessing it locally in MabaXterm terminal by running:
@@ -67,14 +71,15 @@ or
 Here is a pictorial interpretation of a successful connection to a Linux server in the Cloud
 ![Connecting to AWS Cloud - Ubuntu server](https://user-images.githubusercontent.com/96090546/166121155-95d5b286-339a-4c0f-8a69-965507206162.JPG)
 
-# STEP 2 — INSTALLING MYSQL
+## STEP 2 — INSTALLING MYSQL
 Run the following command
 sudo apt install mysql-server
 
 ![Installing MySQL](https://user-images.githubusercontent.com/96090546/166125163-36d63e22-36d7-4f34-840e-67143be145be.JPG)
 
-# STEP 3 — INSTALLING PHP
+## STEP 3 — INSTALLING PHP
 Run the following command
+
 sudo apt install php libapache2-mod-php php-mysql
 
 The PHP version as at this time using the below command:
@@ -84,17 +89,20 @@ php -v
 To test the setup with a PHP script, it’s best to set up a proper Apache Virtual Host to hold the website’s files and folders. Virtual host allows us to have multiple websites located on a single machine.
 ![Virtual host sampl](https://user-images.githubusercontent.com/96090546/166125354-f0ef6c06-a874-492a-ab9d-f611988ee36f.JPG)
 
-# STEP 4 — CREATING A VIRTUAL HOST FOR YOUR WEBSITE USING APACHE
+## STEP 4 — CREATING A VIRTUAL HOST FOR YOUR WEBSITE USING APACHE
 
 Create the directory for projectlamp using ‘mkdir’ command as follows:
+ 
  sudo mkdir /var/www/projectlamp
 
 Next, assign ownership of the directory with your current system user:
+ 
  sudo chown -R $USER:$USER /var/www/projectlamp
 
 Then, create and open a new configuration file in Apache’s sites-available directory using your preferred command-line editor. Here, we’ll be using vi or vim (They are the same by the way):
 
 sudo vi /etc/apache2/sites-available/projectlamp.conf
+
 This will create a new blank file. Paste in the following bare-bones configuration by hitting on i on the keyboard to enter the insert mode, and paste the text:
 
 <VirtualHost *:80>
@@ -116,11 +124,13 @@ sudo a2ensite projectlamp
 
 To disable the default website that comes installed with Apache. This is required if we’re not using a custom domain name, because in this case Apache’s default configuration would overwrite your virtual host. To disable Apache’s default website,
 use a2dissite command , type:
+ 
  sudo a2dissite 000-default
 
 To make sure the configuration file doesn’t contain syntax errors, run:
 
 sudo apache2ctl configtest
+
 Finally, reload Apache so these changes take effect:
  sudo systemctl reload apache2
 
@@ -147,6 +157,7 @@ sudo vim /etc/apache2/mods-enabled/dir.conf
 </IfModule>
 
 After saving and closing the file, reload Apache so the changes take effect using:
+
 sudo systemctl reload apache2
 
 Finally, creqte a PHP script to test that PHP is correctly installed and configured on your server.
@@ -157,11 +168,11 @@ Then create a new file named index.php inside the custom web root folder:
 vim /var/www/projectlamp/index.php
 
 This will open a blank file. Adding the following text, which is valid PHP code, inside the file:
-<?php
-phpinfo();
+
+-- Unfortunately, I can't paste the PHP code here because it disables any text that comes after from being visible--- 
 
 Refresh the browser to confirm that php was installed correctly on my web server,
-![ph-p on my web server](https://user-images.githubusercontent.com/96090546/166127466-853e192f-e58a-4117-bacb-29978e224d78.JPG)
+![php on my web server](https://user-images.githubusercontent.com/96090546/166128115-a991ebdb-909d-43ae-85ae-ad59dfd8b796.JPG)
 
 References:
 - Darey.io DevOps Engineer Scholarship and 
