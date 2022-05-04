@@ -203,46 +203,69 @@ module.exports = Todo;
 Now we need to update our routes from the file api.js in ‘routes’ directory to make use of the new model.
 
 In Routes directory, open api.js with vim api.js, delete the code inside with :%d command and paste there code below into it then save and exit
-
-  const express = require ('express');
+  
+...........................................................
+const express = require ('express');
+  
 const router = express.Router();
+  
 const Todo = require('../models/todo');
 
 router.get('/todos', (req, res, next) => {
 
 //this will return all the data, exposing only the id and action field to the client
+  
 Todo.find({}, 'action')
+  
 .then(data => res.json(data))
+  
 .catch(next)
+  
 });
 
 router.post('/todos', (req, res, next) => {
+  
 if(req.body.action){
+  
 Todo.create(req.body)
+  
 .then(data => res.json(data))
+  
 .catch(next)
+  
 }else {
+  
 res.json({
+  
 error: "The input field is empty"
+  
 })
+  
 }
+  
 });
 
 router.delete('/todos/:id', (req, res, next) => {
+  
 Todo.findOneAndDelete({"_id": req.params.id})
+  
 .then(data => res.json(data))
+  
 .catch(next)
+  
 })
 
 module.exports = router;
+..................................................................
   
 ## MONGODB DATABASE
 
 MongoDB Database
 We need a database where we will store our data. For this we will make use of mLab. mLab provides MongoDB database as a service solution (DBaaS), so to make life easy, you will need to sign up for a shared clusters free account, which is ideal for our use case.
+  
 SIgn up on mongodb.com, complete the process, select AWS as the cloud provider, and choose a region near you.
 
-  In the index.js file, we specified process.env to access environment variables, but we have not yet created this file. So we need to do that now.
+In the index.js file, we specified process.env to access environment variables, but we have not yet created this file. So we need to do that now.
 
 Create a file in your Todo directory and name it .env.
 
@@ -287,20 +310,23 @@ So far we have written backend part of our To-Do application, and configured a d
 
 In this project, we will use Postman to test our API. Downloaded and installed Postman
 
- Now open your Postman, create a POST request to the API http://<PublicIP-or-PublicDNS>:5000/api/todos. This request sends a new task to our To-Do list so the application could store it in the database.
+Now open your Postman, create a POST request to the API http://<PublicIP-or-PublicDNS>:5000/api/todos. This request sends a new task to our To-Do list so the application could store it in the database.
 
 Note: make sure your set header key Content-Type as application/json
+  
 Got this error on postman
-  ![error on postman](https://user-images.githubusercontent.com/96090546/166481131-f4688fed-9dfe-489e-9270-fb365fb2c823.PNG)
+  
+![error on postman](https://user-images.githubusercontent.com/96090546/166481131-f4688fed-9dfe-489e-9270-fb365fb2c823.PNG)
  
- After troubleshooting, I was able to figure out the issue from a line of code. 
-  Add a new task to the list – HTTP POST request
-  ![POST](https://user-images.githubusercontent.com/96090546/166517747-f7b61006-f53f-40dc-bc7f-dc6be459bc70.PNG)
+After troubleshooting, I was able to figure out the issue from a line of code. 
   
-  ![POST](https://user-images.githubusercontent.com/96090546/166517809-0efd606e-9ef3-43e9-9c53-282664c37fba.PNG)
+Add a new task to the list – HTTP POST request
+![POST](https://user-images.githubusercontent.com/96090546/166517747-f7b61006-f53f-40dc-bc7f-dc6be459bc70.PNG)
   
-  Display a list of tasks – HTTP GET request
-  ![GET](https://user-images.githubusercontent.com/96090546/166519329-c6ca4589-64dd-4869-9b95-1c8530bdff1a.PNG)
+![POST](https://user-images.githubusercontent.com/96090546/166517809-0efd606e-9ef3-43e9-9c53-282664c37fba.PNG)
+
+Display a list of tasks – HTTP GET request
+![GET](https://user-images.githubusercontent.com/96090546/166519329-c6ca4589-64dd-4869-9b95-1c8530bdff1a.PNG)
   
   
 ## Step 2 – Frontend creation
@@ -309,7 +335,7 @@ Since we are done with the functionality we want from our backend and API, it is
 
 In the same root directory as your backend code, which is the Todo directory, run:
 
- npx create-react-app client
+npx create-react-app client
 This will create a new folder in your Todo directory called client, where you will add all the react code.
   
   I encountered an error while creating my frontend, I had to first upgrade the version of my node.js
@@ -348,7 +374,138 @@ Install nodemon. It is used to run and monitor the server. If there is any chang
 npm install nodemon --save-dev
 
 In Todo folder open the package.json file. Change the highlighted part of the below screenshot and replace with the code below.
-
-
   
+...........................................................
+  "scripts": {
+  
+  "start": "node index.js",
+  
+  "start-watch": "nodemon index.js",
+  
+  "dev": "concurrently \"npm run start-watch\" \"cd client && npm start\""
+  
+  },
+...........................................................
+  
+Proxy configuration in package.json shown below:
+![packagejson](https://user-images.githubusercontent.com/96090546/166632174-e885350c-5f20-4af4-bc83-cb5bcc6a54d0.PNG)
+  
+Now, change directory to ‘client’
+  
+cd client
+  
+Open the package.json file
+  
+vi package.json
+  
+Add the key value pair in the package.json file "proxy": "http://localhost:5000".
+  
+The whole purpose of adding the proxy configuration in number 3 above is to make it possible to access the application directly from the browser by simply calling the server url like http://localhost:5000 rather than always including the entire path like http://localhost:5000/api/todos
 
+Now, ensure you are inside the Todo directory, and simply do:
+
+npm run dev
+  
+Your app should open and start running on <Public address>:3000
+![React page](https://user-images.githubusercontent.com/96090546/166632257-3c1aca8c-c5d8-412e-bbc5-4b84da9d4a24.PNG)
+  
+## Creating React Components
+One of the advantages of react is that it makes use of components, which are reusable and also makes code modular. For our Todo app, there will be two stateful components and one stateless component.
+  
+From your Todo directory run
+
+cd client
+move to the src directory
+
+cd src
+Inside your src folder create another folder called components
+
+mkdir components
+Move into the components directory with
+
+cd components
+Inside ‘components’ directory create three files Input.js, ListTodo.js and Todo.js.
+
+touch Input.js ListTodo.js Todo.js
+Open Input.js file
+
+vi Input.js
+  
+Copy and paste the following:
+
+![1](https://user-images.githubusercontent.com/96090546/166633262-83a55be1-2396-470d-b2a0-41d074242ade.PNG)
+  
+![2](https://user-images.githubusercontent.com/96090546/166633269-5ae3cf56-db4b-4a80-8932-90704deddd07.PNG)
+
+Now, to make use of Axios, which is a Promise based HTTP client for the browser and node.js, you need to cd into your client from your terminal and run yarn add axios or npm install axios.
+
+Move to the src folder
+
+cd ..
+Move to clients folder
+
+cd ..
+Install Axios
+
+npm install axios
+  
+Go to ‘components’ directory
+
+cd src/components
+After that open your ListTodo.js
+
+vi ListTodo.js
+in the ListTodo.js copy and paste the following code
+
+![3](https://user-images.githubusercontent.com/96090546/166636485-0b698671-3a5b-482f-a6fc-e8eb746e4e73.PNG)
+  
+Then in Todo.js file you write the following code
+![4](https://user-images.githubusercontent.com/96090546/166636687-4ebdf5b5-d4f1-453f-9c2e-a19e6977cb57.PNG)
+  
+![5](https://user-images.githubusercontent.com/96090546/166636689-21c6ecc5-949a-43db-8288-50cea7f9be58.PNG)
+  
+We need to make little adjustment to our react code. Delete the logo and adjust our App.js to look like this.
+
+Move to the src folder
+
+cd ..
+Make sure that you are in the src folder and run
+
+vi App.js
+Copy and paste the code below into it
+![6](https://user-images.githubusercontent.com/96090546/166636834-399e9343-0532-4209-af3a-a4a918374bd8.PNG)
+  
+ After pasting, exit the editor.
+
+In the src directory open the App.css
+
+vi App.css
+Then paste the following code into App.css:
+
+![appcss1](https://user-images.githubusercontent.com/96090546/166641631-606b729a-432f-4e5d-87d6-7568a27ab6d9.PNG)
+  
+![appcss2](https://user-images.githubusercontent.com/96090546/166641638-4d387e67-15d3-40d6-b79c-7a65f0813149.PNG)
+  
+![appcss3](https://user-images.githubusercontent.com/96090546/166641641-382b29e8-0621-4c31-aefe-7ae09567c056.PNG)
+  
+Exit
+
+In the src directory open the index.css
+
+vim index.css
+Copy and paste the code below:
+
+![index](https://user-images.githubusercontent.com/96090546/166641807-c1b265a4-0113-4e16-8ddc-a5acf25bdc34.PNG)
+  
+Go to the Todo directory
+
+cd ../..
+When you are in the Todo directory run:
+
+npm run dev
+  
+Here is my TOdo List:
+  
+![My Todo](https://user-images.githubusercontent.com/96090546/166642011-c0dbe9d2-7638-48d1-b682-75da0e7f3f21.PNG)
+  
+![My Todo list 2](https://user-images.githubusercontent.com/96090546/166642015-9b45c843-c736-4588-bcfd-d62f09bb3e0b.PNG)
