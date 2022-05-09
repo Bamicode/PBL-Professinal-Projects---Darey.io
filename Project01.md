@@ -50,21 +50,21 @@ To install Apache using Ubuntu’s package manager ‘apt’:
 
 #update a list of packages in package manager
 
-sudo apt update
+    sudo apt update
 
 #run apache2 package installation
 
-sudo apt install apache2
+    sudo apt install apache2
 
 To verify that apache2 is running as a Service in the OS, use following command;
 
-sudo systemctl status apache2
+    sudo systemctl status apache2
 
 Accessing it locally in MabaXterm terminal by running:
 
- curl http://localhost:80
-or
- curl http://127.0.0.1:80
+    curl http://localhost:80
+    or
+    curl http://127.0.0.1:80
  
 ![Apache2 Web server](https://user-images.githubusercontent.com/96090546/166124927-bb479d36-76f6-4478-94c3-2e36d1f9e6bd.JPG)
 
@@ -73,17 +73,20 @@ Here is a pictorial interpretation of a successful connection to a Linux server 
 
 ## STEP 2 — INSTALLING MYSQL
 Run the following command
-sudo apt install mysql-server
+
+    sudo apt install mysql-server
 
 ![Installing MySQL](https://user-images.githubusercontent.com/96090546/166125163-36d63e22-36d7-4f34-840e-67143be145be.JPG)
 
 ## STEP 3 — INSTALLING PHP
 Run the following command
 
-sudo apt install php libapache2-mod-php php-mysql
+    sudo apt install php libapache2-mod-php php-mysql
 
 The PHP version as at this time using the below command:
-php -v
+
+    php -v
+
 ![php version](https://user-images.githubusercontent.com/96090546/166125263-ed525468-fa29-436b-ba27-408769ff642c.JPG)
 
 To test the setup with a PHP script, it’s best to set up a proper Apache Virtual Host to hold the website’s files and folders. Virtual host allows us to have multiple websites located on a single machine.
@@ -93,26 +96,26 @@ To test the setup with a PHP script, it’s best to set up a proper Apache Virtu
 
 Create the directory for projectlamp using ‘mkdir’ command as follows:
  
- sudo mkdir /var/www/projectlamp
+    sudo mkdir /var/www/projectlamp
 
 Next, assign ownership of the directory with your current system user:
  
- sudo chown -R $USER:$USER /var/www/projectlamp
+    sudo chown -R $USER:$USER /var/www/projectlamp
 
 Then, create and open a new configuration file in Apache’s sites-available directory using your preferred command-line editor. Here, we’ll be using vi or vim (They are the same by the way):
 
-sudo vi /etc/apache2/sites-available/projectlamp.conf
+    sudo vi /etc/apache2/sites-available/projectlamp.conf
 
 This will create a new blank file. Paste in the following bare-bones configuration by hitting on i on the keyboard to enter the insert mode, and paste the text:
 
-<VirtualHost *:80>
-    ServerName projectlamp
-    ServerAlias www.projectlamp 
-    ServerAdmin webmaster@localhost
-    DocumentRoot /var/www/projectlamp
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
+    <VirtualHost *:80>
+        ServerName projectlamp
+        ServerAlias www.projectlamp 
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/projectlamp
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
 
 Using the command line sudo ls /etc/apache2/sites-available,
 ![Virtual Host](https://user-images.githubusercontent.com/96090546/166125955-83a3f558-a584-452f-9d17-58b89de1a9f3.JPG)
@@ -120,23 +123,25 @@ Using the command line sudo ls /etc/apache2/sites-available,
 With this VirtualHost configuration, we’re telling Apache to serve projectlamp using /var/www/projectlampl as its web root directory.
 
 Use a2ensite command to enable the new virtual host:
-sudo a2ensite projectlamp
+
+    sudo a2ensite projectlamp
 
 To disable the default website that comes installed with Apache. This is required if we’re not using a custom domain name, because in this case Apache’s default configuration would overwrite your virtual host. To disable Apache’s default website,
 use a2dissite command , type:
  
- sudo a2dissite 000-default
+    sudo a2dissite 000-default
 
 To make sure the configuration file doesn’t contain syntax errors, run:
 
-sudo apache2ctl configtest
+    sudo apache2ctl configtest
 
 Finally, reload Apache so these changes take effect:
- sudo systemctl reload apache2
+
+    sudo systemctl reload apache2
 
 The new website is now active, but the web root /var/www/projectlamp is still empty. Create an index.html file in that location so that we can test that the virtual host works as expected:
 
-sudo echo 'Hello LAMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s http://169.254.169.254/latest/meta-  data/public-ipv4) > /var/www/projectlamp/index.html
+    sudo echo 'Hello LAMP from hostname' $(curl -s http://169.254.169.254/latest/meta-data/public-hostname) 'with public IP' $(curl -s http://169.254.169.254/latest/meta-  data/public-ipv4) > /var/www/projectlamp/index.html
 
 Now on my browser, the below is the result. This shows that the Apache virtual host is working as expected.
 In the output we can see server’s public hostname (DNS name) and public IP address.
@@ -148,30 +153,33 @@ With the default DirectoryIndex settings on Apache, a file named index.html will
 
 To change this behavior, there's need to edit the /etc/apache2/mods-enabled/dir.conf file and change the order in which the index.php file is listed within the DirectoryIndex directive:
 
-sudo vim /etc/apache2/mods-enabled/dir.conf
-<IfModule mod_dir.c>
-        #Change this:
-        #DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm
-        #To this:
-        DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
-</IfModule>
+    sudo vim /etc/apache2/mods-enabled/dir.conf
+    
+    <IfModule mod_dir.c>
+            #Change this:
+            #DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm
+            #To this:
+            DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+    </IfModule>
 
 After saving and closing the file, reload Apache so the changes take effect using:
 
-sudo systemctl reload apache2
+    sudo systemctl reload apache2
 
 Finally, creqte a PHP script to test that PHP is correctly installed and configured on your server.
 
 Now that there's a custom location to host the website’s files and folders, create a PHP test script to confirm that Apache is able to handle and process requests for PHP files.
 
 Then create a new file named index.php inside the custom web root folder:
-vim /var/www/projectlamp/index.php
+
+    sudo vim /var/www/projectlamp/index.php
 
 This will open a blank file. Adding the following text, which is valid PHP code, inside the file:
 
 -- Unfortunately, I can't paste the PHP code here because it disables any text that comes after from being visible--- 
 
-Refresh the browser to confirm that php was installed correctly on my web server,
+Refresh the browser to confirm that php was installed correctly on my web server;
+
 ![php on my web server](https://user-images.githubusercontent.com/96090546/166128115-a991ebdb-909d-43ae-85ae-ad59dfd8b796.JPG)
 
 References:
