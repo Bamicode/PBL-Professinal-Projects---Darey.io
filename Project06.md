@@ -285,13 +285,34 @@ Verify that the service is up and running by using sudo systemctl status mysqld,
    On the html directory, that is cd /var/www/html
    
          sudo vi wp-config.php
+   Edit the database_name, user_name, password, and Host_database (Database Server-ip-address)
+   
+   ![wp-config](https://user-images.githubusercontent.com/96090546/167357716-bd0b7700-b799-463e-b194-6c75f6bb8306.PNG)
+   
+   And configure the bind-address
+   
+   ![bind-addr](https://user-images.githubusercontent.com/96090546/167357543-224636b0-6b4e-4d63-8e0e-5e1defcdae83.PNG)
+   
    Now there's need to first disable the default apache homepage. Run the command to do so;
    
          sudo mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf_backup
+   Restrart Apache
+   
+         sudo systemctl restart httpd
          
 ### Step 6 — Configure WordPress to connect to remote database.
+                 
+      Configure security group
+   
+   ![Webserver access only](https://user-images.githubusercontent.com/96090546/167297739-14c94f22-1db6-4ec4-95fa-310ce233b97e.PNG)
+   
+   Now, run the command to connect to the Database remote server via wordpress on the webserver
+   
+      sudo mysql -h <my database-ip-address> -u <database_name> -p
+   
+   ![webserver communication with database server](https://user-images.githubusercontent.com/96090546/167357549-99723315-88fa-4c78-a7ca-dbfb1d817e0c.PNG)
+      
 
-![Webserver access only](https://user-images.githubusercontent.com/96090546/167297739-14c94f22-1db6-4ec4-95fa-310ce233b97e.PNG)
 
 
 
