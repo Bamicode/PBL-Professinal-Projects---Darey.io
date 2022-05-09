@@ -154,11 +154,11 @@ Type or paste the following lines into the new file. This is valid PHP code that
     <?php
     phpinfo();
 
+![php page](https://user-images.githubusercontent.com/96090546/166827304-591dfd61-3076-4241-ab8a-a3b3fce8064f.PNG)
+
 After checking the relevant information about the PHP server through that page, it’s best to remove the file created as it contains sensitive information about our PHP environment and our Ubuntu server. Use rm to remove that file:
 
     sudo rm /var/www/your_domain/info.php
-
-![php page](https://user-images.githubusercontent.com/96090546/166827304-591dfd61-3076-4241-ab8a-a3b3fce8064f.PNG)
 
 ### Step 6 — Retrieving data from MySQL database with PHP
 
