@@ -312,8 +312,15 @@ Verify that the service is up and running by using sudo systemctl status mysqld,
    
    ![webserver communication with database server](https://user-images.githubusercontent.com/96090546/167357549-99723315-88fa-4c78-a7ca-dbfb1d817e0c.PNG)
       
+Now on the browser, test to install and configure our wordpress installation on the database as show below.
+
+![wordpress1](https://user-images.githubusercontent.com/96090546/167362266-501e0931-0990-4109-ae38-b6a93fa2df5f.PNG)
+
+![wordpress success](https://user-images.githubusercontent.com/96090546/167362264-9590f891-0d38-40d9-8bd4-98fc9ec4d94f.PNG)
+
+![Wordpress homepage](https://user-images.githubusercontent.com/96090546/167362258-3015f410-26f8-44ca-b68a-177985f331bc.PNG)
 
 
 
-
+DONE!!!
 
