@@ -123,6 +123,10 @@ Step 1 — Prepare a Web Server
 
 13. Use mkfs.ext4 to format the logical volumes with ext4 filesystem
 
+         sudo mkfs.ext4 /dev/webdata-vg/apps-lv
+         
+         or use the command:
+
          sudo mkfs -t ext4 /dev/webdata-vg/apps-lv
          sudo mkfs -t ext4 /dev/webdata-vg/logs-lv
 
