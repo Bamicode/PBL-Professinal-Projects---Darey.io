@@ -114,6 +114,8 @@ On main dashboard select "Manage Jenkins" and choose "Manage Plugins" menu item.
 
 On "Available" tab search for "Publish Over SSH" plugin and install it
 
+![plugin installation](https://user-images.githubusercontent.com/96090546/169727315-960feafa-7b63-4853-99ea-bd5645b2fc67.PNG)
+
 2. Configure the job/project to copy artifacts over to NFS server.
 
 On main dashboard select "Manage Jenkins" and choose "Configure System" menu item.
@@ -121,12 +123,62 @@ On main dashboard select "Manage Jenkins" and choose "Configure System" menu ite
 Scroll down to Publish over SSH plugin configuration section and configure it to be able to connect to your NFS server:
 
 2a. Provide a private key (content of .pem file that you use to connect to NFS server via SSH/Putty)
+
 2b. Arbitrary name
+
 2c. Hostname – can be private IP address of your NFS server
+
 2d. Username – ec2-user (since NFS server is based on EC2 with RHEL 8)
+
 2e. Remote directory – /mnt/apps since our Web Servers use it as a mointing point to retrieve files from the NFS server
 
 Test the configuration and make sure the connection returns Success. Remember, that TCP port 22 on NFS server must be open to receive SSH connections.
+
+![config success](https://user-images.githubusercontent.com/96090546/169728645-e2b0a42a-b9e4-4ff4-8006-262f2e8330fe.PNG)
+
+Save the configuration, open your Jenkins job/project configuration page and add another one "Post-build Action"
+
+![post-build action](https://user-images.githubusercontent.com/96090546/169732101-21d8e7d8-53aa-4bc4-b314-ef4738eaf986.PNG)
+
+
+Configure it to send all files produced by the build into our previouslys define remote directory. In our case we want to copy all files and directories – so we use **.
+
+![post-build action1](https://user-images.githubusercontent.com/96090546/169732105-6143aae9-49df-4645-aa25-266d41596a26.PNG)
+
+Save this configuration and go ahead, change something in README.MD file in your GitHub Tooling repository.
+
+Webhook will trigger a new job and in the "Console Output" of the job you will find something like this:
+
+    SSH: Transferred 25 file(s)
+    Finished: SUCCESS
+
+Encountered error due to permission denied on the /mnt/apps folder
+Resolved it by changing ownership in order for the NFS server to communicate with Jenkins server
+
+        sudo chown -R nobody: /mnt/apps
+        sudo chmod -R 777 /mnt/apps
+        
+   ![changed ownership before build success](https://user-images.githubusercontent.com/96090546/169732513-09167519-76d5-444e-a77b-db57afdd442a.PNG)
+
+![Build success2](https://user-images.githubusercontent.com/96090546/169732252-a5fe8e56-e676-47b8-b8d2-0824be8cd4ff.PNG)
+
+To make sure that the files in /mnt/apps have been udated – connect via SSH/Putty to your NFS server and check README.MD file
+
+    cat /mnt/apps/README.md
+    
+  ![Update on README md file](https://user-images.githubusercontent.com/96090546/169732755-79e4feee-1281-4ea1-b915-1447d2aeb14b.PNG)
+  
+We have just implemented your first Continous Integration solution using Jenkins CI.
+
+![CI solution using Jenkins](https://user-images.githubusercontent.com/96090546/169732991-3b3305e4-ba58-4e70-9794-d3b4e31583a6.PNG)
+
+
+
+
+Thank You!!!
+
+
+
 
 
 
